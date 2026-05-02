@@ -1,0 +1,33 @@
+name: Deploy RAG Chatbot to Azure Container Apps
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and push Docker image to Azure Container Registry
+        run: |
+          az acr build \
+            --registry ${{ secrets.ACR_NAME }} \
+            --image rag-chatbot:${{ github.sha }} \
+            --image rag-chatbot:latest \
+            .
+
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name rag-chatbot-app \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest
