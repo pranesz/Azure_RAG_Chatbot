@@ -29,7 +29,7 @@ jobs:
       - name: Register Microsoft.App provider
         run: az provider register -n Microsoft.App --wait
 
-       - name: Deploy to Azure Container Apps
+      - name: Deploy to Azure Container Apps
         run: |
           az containerapp create \
             --name rag-chatbot-app \
