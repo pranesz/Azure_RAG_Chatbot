@@ -27,7 +27,8 @@ jobs:
         run: docker push ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:${{ github.sha }} && docker push ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest
 
       - name: Register Microsoft.App provider
-        run: az provider register -n Microsoft.App --wait
+        run: |
+             az provider register -n Microsoft.App --wait
              az provider register -n Microsoft.OperationalInsights --wait
 
 
