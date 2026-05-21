@@ -52,7 +52,3 @@ jobs:
             --registry-password ${{ secrets.AZURE_CLIENT_SECRET }} \
             --target-port 8000 \
             --ingress external \
-          || az containerapp update \
-            --name rag-chatbot-app \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest
