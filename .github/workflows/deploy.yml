@@ -28,6 +28,16 @@ jobs:
 
       - name: Register Microsoft.App provider
         run: az provider register -n Microsoft.App --wait
+             az provider register -n Microsoft.OperationalInsights --wait
+
+
+      - name: Create Container Apps Environment
+        run: |
+          az containerapp env create \
+          --name rag-chatbot-env \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --location eastus \
+          || echo "Environment already exists, skipping..."
 
       - name: Deploy to Azure Container Apps
         run: |
@@ -40,5 +50,8 @@ jobs:
             --registry-username ${{ secrets.AZURE_CLIENT_ID }} \
             --registry-password ${{ secrets.AZURE_CLIENT_SECRET }} \
             --target-port 8000 \
-            --ingress external
-            
+            --ingress external \
+          || az containerapp update \
+            --name rag-chatbot-app \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest
