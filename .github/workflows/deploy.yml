@@ -48,7 +48,7 @@ jobs:
             --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest \
             --environment ${{ secrets.CONTAINER_APP_ENV }} \
             --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.AZURE_CLIENT_ID }} \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
             --registry-password ${{ secrets.AZURE_CLIENT_SECRET }} \
             --target-port 8000 \
             --ingress external \
