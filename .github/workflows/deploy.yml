@@ -42,13 +42,27 @@ jobs:
 
       - name: Deploy to Azure Container Apps
         run: |
+          if az containerapp show \
+            --name rag-chatbot-app \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} >/dev/null 2>&1; then
+      
+            echo "Updating existing container app..."
+      
+            az containerapp update \
+              --name rag-chatbot-app \
+              --resource-group ${{ secrets.RESOURCE_GROUP }} \
+              --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest
+          else
+
+          echo "Creating new container app..."
+    
           az containerapp create \
             --name rag-chatbot-app \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest \
             --environment ${{ secrets.CONTAINER_APP_ENV }} \
+            --image ${{ secrets.ACR_NAME }}.azurecr.io/rag-chatbot:latest \
             --registry-server ${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.AZURE_CLIENT_SECRET }} \
             --target-port 8000 \
-            --ingress external \
+            --ingress external
+
+          fi
